@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { register, newBooking_userID } = require('../models/account.model');
+const { register, newBooking_userID, newReport } = require('../models/account.model');
 const { login } = require('../models/account.model');
 const { validateEmail } = require('../models/account.model');
 const { validateAccount } = require('../models/account.model');
@@ -14,6 +14,8 @@ const { getBirdType } = require('../models/account.model');
 const { getNewBirdByUserID } = require('../models/account.model');
 const { updateBirdType } = require('../models/account.model');
 const { addNewBooking } = require('../models/account.model');
+const { addNewReport } = require('../models/account.model');
+const { getAllReports } = require('../models/account.model');
 
 const router = express.Router();
 
@@ -145,6 +147,39 @@ router.route('/:user_id/newBird')
                     let data = await getNewBirdByUserID(req.params.user_id);
                     res.status(200).json(data.recordset[0]);
                 }
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json(error);
+        }
+    })
+
+//GET: /users/:user_id/:bookingId/reports  -> get all reports by booking id
+//return detail report information of booking_id
+router.route('/:user_id/:bookingId/reports')
+    .get(async (req, res) => {
+        try {
+            let data = await getAllReports(req.params.bookingId);
+            if (data.recordset.length === 0) {
+                res.status(404).json({ message: 'Booking not found' });
+            } else {
+                res.status(200).json(data.recordset);
+            }
+        } catch (error) {
+            res.status(500).json(error);
+        }
+    })
+
+//POST: /users/:user_id/:bookingId/newReport  -> add new report by booking id
+//return true if add report success
+router.route('/:user_id/:bookingId/newReport')
+    .post(async (req, res) => {
+        try {
+            let data = await addNewReport(req.params.bookingId, req.body);
+            if (data === false) {
+                res.status(404).json({ message: 'Add Report failed' });
+            } else {
+                res.status(200).json({ message: 'Report added' });
             }
         } catch (error) {
             console.log(error);

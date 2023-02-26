@@ -159,4 +159,65 @@ module.exports = {
             throw error;
         }
     },
+    getAllReports: async (booking_id) => {
+        try {
+            let con = await connection();
+            let sql = `SELECT dr.dreport_id, dr.booking_id, dr.date, drd.dreport_detail_id, drd.bdetail_id, drd.service_report_image, drd.service_report_text
+                        FROM DailyReport dr
+                        JOIN DailyReportDetail drd ON dr.dreport_id = drd.dreport_id
+                        WHERE dr.booking_id = ${booking_id}`;
+            return con.query(sql);
+        } catch (error) {
+            throw error;
+        }
+    },
+    addNewReport: async (booking_id, bodydata) => {
+        try {
+            let sql = await connection();
+            const transaction = new sql.Transaction();
+            await transaction.begin();
+            try {
+                // Insert new DailyReport record
+                const dailyReportInsertResult = await transaction.request()
+                    .input('booking_id', sql.Int, booking_id)
+                    .query(`INSERT INTO DailyReport (booking_id, date) OUTPUT INSERTED.dreport_id VALUES (@booking_id, GETDATE())`);
+                //This query will return the dreport_id
+
+                const dreport_id = dailyReportInsertResult.recordset[0].dreport_id;
+
+                // Get list of BookingDetail records without a DailyReportDetail record
+                const bookingDetailResult = await transaction.request()
+                    .input('booking_id', sql.Int, booking_id)
+                    .query(`SELECT *
+                        FROM BookingDetail bd
+                        WHERE bd.booking_id = @booking_id
+                        AND NOT EXISTS (
+                            SELECT 1
+                            FROM DailyReportDetail drd
+                            WHERE drd.bdetail_id = bd.bdetail_id
+                        )`);
+
+                // Insert new DailyReportDetail record for each BookingDetail record
+                for (const row of bookingDetailResult.recordset) {
+                    const { bdetail_id } = row;
+
+                    await transaction.request()
+                        .input('dreport_id', sql.Int, dreport_id)
+                        .input('bdetail_id', sql.Int, bdetail_id)
+                        .input('service_report_image', sql.NVarChar(255), bodydata.service_report_image)
+                        .input('service_report_text', sql.NVarChar(255), bodydata.service_report_text)
+                        .query(`INSERT INTO DailyReportDetail (dreport_id, bdetail_id, service_report_image, service_report_text)
+                             VALUES (@dreport_id, @bdetail_id, @service_report_image, @service_report_text)`);
+                }
+
+                await transaction.commit();
+                return true;
+            } catch (error) {
+                await transaction.rollback();
+                return false;
+            }
+        } catch (error) {
+            throw error;
+        }
+    },
 }
