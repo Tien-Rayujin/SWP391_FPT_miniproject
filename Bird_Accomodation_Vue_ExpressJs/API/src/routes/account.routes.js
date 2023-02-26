@@ -1,13 +1,19 @@
 const express = require('express');
 
-const { register } = require('../models/account.model');
+const { register, newBooking_userID } = require('../models/account.model');
 const { login } = require('../models/account.model');
 const { validateEmail } = require('../models/account.model');
+const { validateAccount } = require('../models/account.model');
 const { getAccountByID } = require('../models/account.model');
+// const { newBooking } = require('../models/account.model');   // error
 const { getBirdByUserID } = require('../models/account.model');
 const { getBirdByBirdID_UserID } = require('../models/account.model');
 const { addNewBird_UserID } = require('../models/account.model');
 const { deleteBirdID_UserID } = require('../models/account.model');
+const { getBirdType } = require('../models/account.model');
+const { getNewBirdByUserID } = require('../models/account.model');
+const { updateBirdType } = require('../models/account.model');
+const { addNewBooking } = require('../models/account.model');
 
 const router = express.Router();
 
@@ -41,6 +47,17 @@ router.route('/register')
             res.status(500).json(error);
         }
     })
+
+router.route('/birdType')
+    .get(async (req, res) => {
+        try {
+            let data = await getAllBirdType();
+            res.status(200).json(data.recordset);
+        } catch (error) {
+            res.status(500).json(error);
+        }
+    })
+
 
 router.route('/:user_id')
     .get(async (req, res) => {
@@ -81,11 +98,24 @@ router.route('/:user_id/:bird_id')
             }
         } catch (error) {
             res.status(500).json(error);
-        } 
+        }
     })
-    .put(async (req, res) => {
-        // code here
-        // this one to update bird or kind of...
+    .patch(async (req, res) => {
+        try {
+            let bTypeID = await getBirdType(req.body.bird_type);
+            if (bTypeID.recordset.length === 0) {
+                res.status(404).json({ message: 'Bird type not found' });
+            } else {
+                let data = await updateBirdType(req.params.bird_id, await bTypeID.recordset[0].btype_id);
+                if (data.rowsAffected[0] === 0) {
+                    res.status(404).json({ message: 'Cannot update bird type' });
+                } else {
+                    res.status(200).json({ message: 'Bird type updated' });
+                }
+            }
+        } catch (error) {
+            res.status(500).json(error);
+        }
     })
     .delete(async (req, res) => {
         try {
@@ -103,9 +133,21 @@ router.route('/:user_id/:bird_id')
 router.route('/:user_id/newBird')
     .post(async (req, res) => {
         try {
-            let data = await addNewBird_UserID(req.body, req.params.user_id);
-            res.status(200).json(data);
+            let bTypeID = await getBirdType(req.body.bird_type);
+            if (bTypeID.recordset.length === 0) {
+                res.status(404).json({ message: 'Bird type not found' });
+            } else {
+                req.body.type_id = await bTypeID.recordset[0].btype_id;
+                let checkAdd = await addNewBird_UserID(req.body, req.params.user_id);
+                if (checkAdd.rowsAffected[0] === 0) {
+                    res.status(400).json({ message: 'Add Bird failed' });
+                } else {
+                    let data = await getNewBirdByUserID(req.params.user_id);
+                    res.status(200).json(data.recordset[0]);
+                }
+            }
         } catch (error) {
+            console.log(error);
             res.status(500).json(error);
         }
     })
