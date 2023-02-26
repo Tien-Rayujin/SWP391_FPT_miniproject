@@ -13,8 +13,6 @@ const config = {
     }
 }
 
-// if error occur when import mssql module, please run this command in terminal
-// npm install mssql --save
 sql.on('error', err => { console.log(err.message); })
 /**
  * EX:
@@ -31,30 +29,12 @@ sql.on('error', err => { console.log(err.message); })
  */
 async function connection(){
    try {
-       await sql.connect(config);
+       sql.connect(config);
        return sql;
    }
     catch (err) {
         console.log(err.message)
     }
 }
-//console log on success connection
-// async function testConnection(){
-//     try {
-//         await sql.connect(config);
-//         console.log('connected')
-//         //query user table
-//         const query = 'select * from [User]'
-//         sql.query(query).then(data => {
-//             console.log(data.recordset)
-//         })
-//
-//
-//     }
-//     catch (err) {
-//         console.log(err.message)
-//     }
-// }
-
 
 module.exports = {connection}

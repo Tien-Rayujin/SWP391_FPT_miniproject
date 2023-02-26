@@ -13,10 +13,5 @@ router.use('/posts', posts);
 router.use('/services', services);
 router.use('/reviews', reviews);
 
-
-
-
-
-
 // export router
 module.exports = router;
