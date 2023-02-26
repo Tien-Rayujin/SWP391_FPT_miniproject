@@ -48,23 +48,16 @@ router.route('/register')
         }
     })
 
+router.route('/birdType')
+    .get(async (req, res) => {
+        try {
+            let data = await getAllBirdType();
+            res.status(200).json(data.recordset);
+        } catch (error) {
+            res.status(500).json(error);
+        }
+    })
 
-    // error
-// router.route('/:user_id/newBooking')
-//     .post(async (req, res) => {
-//         try {
-//             let user = await getAccountByID(req.params.user_id);
-//             if (!user) {
-//                 res.status(404).json({ message: 'Account not found' });
-//             } else {
-//                 let data = await newBooking(req.body);
-//                 res.status(200).json(data.recordset[0]);
-//             }
-//         } catch (error) {
-//             console.log(error);
-//             res.status(500).json(error);
-//         }
-//     })
 
 router.route('/:user_id')
     .get(async (req, res) => {
@@ -112,7 +105,7 @@ router.route('/:user_id/:bird_id')
             let bTypeID = await getBirdType(req.body.bird_type);
             if (bTypeID.recordset.length === 0) {
                 res.status(404).json({ message: 'Bird type not found' });
-            }else {
+            } else {
                 let data = await updateBirdType(req.params.bird_id, await bTypeID.recordset[0].btype_id);
                 if (data.rowsAffected[0] === 0) {
                     res.status(404).json({ message: 'Cannot update bird type' });
@@ -143,7 +136,7 @@ router.route('/:user_id/newBird')
             let bTypeID = await getBirdType(req.body.bird_type);
             if (bTypeID.recordset.length === 0) {
                 res.status(404).json({ message: 'Bird type not found' });
-            }else {
+            } else {
                 req.body.type_id = await bTypeID.recordset[0].btype_id;
                 let checkAdd = await addNewBird_UserID(req.body, req.params.user_id);
                 if (checkAdd.rowsAffected[0] === 0) {
@@ -152,20 +145,6 @@ router.route('/:user_id/newBird')
                     let data = await getNewBirdByUserID(req.params.user_id);
                     res.status(200).json(data.recordset[0]);
                 }
-            }
-        } catch (error) {
-            res.status(500).json(error);
-        }
-    })
-
-router.route('/:user_id/newBooking')
-    .post(async (req, res) => {
-        try {
-            let check = await addNewBooking(req.body, req.params.user_id);
-            if (!check) {
-                res.status(400).json({ message: 'Add Booking failed' });
-            } else {
-                res.status(200).json({ message: 'Booking added' });
             }
         } catch (error) {
             console.log(error);

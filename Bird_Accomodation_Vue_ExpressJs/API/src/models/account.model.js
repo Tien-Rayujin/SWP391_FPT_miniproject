@@ -9,7 +9,7 @@ module.exports = {
             const defaultStatus = 1;
             const defaultUserImg = null;
             let sql = `INSERT INTO [User] (email, password, name, address, phone, role, status, user_img) \n`
-                sql += `VALUES ('${body.email}', '${body.password}', '${body.name}', 
+            sql += `VALUES ('${body.email}', '${body.password}', '${body.name}', 
                     '${body.address}', '${body.phone}', ${defaultRole}, ${defaultStatus}, '${defaultUserImg}')`;
             return con.query(sql);
         } catch (error) {
@@ -21,7 +21,7 @@ module.exports = {
         try {
             let con = await connection();
             let sql = `SELECT * FROM [User] WHERE email = '${body.email}' COLLATE Latin1_General_CS_AS \n`
-                sql += `AND password = '${body.password}' COLLATE Latin1_General_CS_AS`;
+            sql += `AND password = '${body.password}' COLLATE Latin1_General_CS_AS`;
             return con.query(sql);
         } catch (error) {
             throw error;
@@ -68,8 +68,8 @@ module.exports = {
         try {
             let con = await connection();
             let sql = `insert into Birds(user_id, type_id, age, bird_name, breed, gender, image, description) \n`
-                sql += `values (${user_id},${body.type_id},${body.age},
-                    '${body.bird_name}','${body.breed}','${body.gender}','${body.image}','${body.description}')`
+            sql += `values (${user_id},${body.type_id},${body.age},
+                    '${body.bird_name}','${body.breed}','${body.gender}','${body.image || null}','${body.description}')`
             return con.query(sql);
         } catch (error) {
             throw error;
@@ -84,6 +84,16 @@ module.exports = {
             throw error;
         }
     },
+    getAllBirdType: async () => {
+        try {
+            let con = await connection();
+            let sql = `SELECT * FROM BirdType`;
+            return con.query(sql);
+        } catch (error) {
+            throw error;
+        }
+    },
+
     getBirdType: async (name) => {
         try {
             let con = await connection();
