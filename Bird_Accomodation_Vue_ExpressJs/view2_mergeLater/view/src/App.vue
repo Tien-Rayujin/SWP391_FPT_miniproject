@@ -6,7 +6,7 @@
   </div>
   <!-- footer -->
   <!-- <Footer /> -->
-  
+  <Footer/>
 </template>
 
 <script>

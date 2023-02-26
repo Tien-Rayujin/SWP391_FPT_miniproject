@@ -4,7 +4,7 @@
       <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
           <router-link class="navbar-item" href="https://bulma.io" to="/">
-            <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+            <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28" alt="Logo">
           </router-link>
         </div>
         <div class="navbar-menu">
@@ -12,11 +12,9 @@
             <router-link class="navbar-item" to="/service">Service</router-link>
             <router-link class="navbar-item" to="/facilities">Facilities</router-link>
             <router-link class="navbar-item" to="/about">About</router-link>
-            <!-- <router-link class="navbar-item" to="/login">Login</router-link> -->
             <router-link class="navbar-item" href="#" name="booking" @click="patchLogin" to="/booking">Booking</router-link>
           </div>
         </div>
-        <!-- <li><router-link to="/login">Login</router-link></li> -->
 
         <div class="navbar-end">
           <div class="navbar-item">
@@ -28,10 +26,30 @@
                 Log in
               </router-link>
             </div>
-            <router-link class="navbar-item" v-if="getUser?.role === 1" name="manager" @click="patchLogin" to="">Manager</router-link>
+          </div>
+          <div class="navbar-item">
+            <div class="dropdown is-hoverable ">
+              <div class="dropdown-trigger">
+                <router-link  v-if="getUser?.role === 0" name="manager" @click="patchLogin" to="">
+                  <img src="public/favicon.ico" alt="user"/>
+                </router-link>
+              </div>
+              <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                <div class="dropdown-content">
+                  <router-link href="#" class="dropdown-item" to="">
+                    Overview
+                  </router-link>
+                  <router-link href="#" class="dropdown-item" to="">
+                    Modifiers
+                  </router-link>
+                  <router-link href="#" class="dropdown-item" to="">
+                    Logout
+                  </router-link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <li v-if="getUser?.role === 1"><a href="#" name="manager" @click="patchLogin">Manager</a></li>
       </nav>
     </header>
   </div>
@@ -61,6 +79,7 @@ export default {
 
 <style scoped>
 header{
-  padding:10px 30px;
+  padding:10px 120px;
 }
+
 </style>
