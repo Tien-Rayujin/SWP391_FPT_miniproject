@@ -180,6 +180,18 @@ module.exports = {
             throw error;
         }
     },
+    getBookingService_booking_id: async (booking_id) => {
+        try {
+            let con = await connection();
+            let sql = `select bd.*, s.name 
+                    from Bookings b join BookingDetail bd on b.booking_id = bd.booking_id
+                    join Services s on bd.service_id = s.service_id 
+                    where b.booking_id = ${booking_id}`;
+            return con.query(sql);
+        } catch (error) {
+            throw error;
+        }
+    },
     addNewReport: async (booking_id, bodydata) => {
         try {
             let sql = await connection();
