@@ -1,88 +1,49 @@
 <template>
-    <a-layout>
-        <a-layout-content style="padding: 0">
-            <a-layout style="padding: 24px 0; background: #fff">
-                <a-layout-sider width="200" style="background: #fff">
-                    <a-menu v-model:selectedKeys="selectedKeys2" v-model:openKeys="openKeys" mode="inline"
-                        style="height: 100% margin: 0px">
-                        <a-sub-menu key="sub1">
-                            <template #title>
-                                <span>
-                                    <user-outlined />
-                                    subnav 1
-                                </span>
-                            </template>
-                            <a-menu-item key="1">day1</a-menu-item>
-                            <a-menu-item key="2">day2</a-menu-item>
-                            <a-menu-item key="3">day3</a-menu-item>
-                            <a-menu-item key="4">day4</a-menu-item>
-                        </a-sub-menu>
-                        <a-sub-menu key="sub2">
-                            <template #title>
-                                <span>
-                                    <laptop-outlined />
-                                    subnav 2
-                                </span>
-                            </template>
-                            <a-menu-item key="5">day5</a-menu-item>
-                            <a-menu-item key="6">day6</a-menu-item>
-                            <a-menu-item key="7">day7</a-menu-item>
-                            <a-menu-item key="8">day8</a-menu-item>
-                        </a-sub-menu>
-                        <a-sub-menu key="sub3">
-                            <template #title>
-                                <span>
-                                    <notification-outlined />
-                                    subnav 3
-                                </span>
-                            </template>
-                            <a-menu-item key="9">option9</a-menu-item>
-                            <a-menu-item key="10">option10</a-menu-item>
-                            <a-menu-item key="11">option11</a-menu-item>
-                            <a-menu-item key="12">option12</a-menu-item>
-                        </a-sub-menu>
-                    </a-menu>
-                </a-layout-sider>
-                <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-                    Content
-                </a-layout-content>
-            </a-layout>
-        </a-layout-content>
-    </a-layout>
+  <div class="container">
+    <div class="columns">
+      <!-- each service -->
+      <div class="column is-half each-service">
+        <div class="columns ">
+          <div class="column content">
+            <h1>Food and Supplies</h1>
+
+            <p>- We are prepared Food and Water for your bird at 5AM</p>
+          </div>
+          <div class="column">
+            <img src='https://img.freepik.com/free-vector/hand-drawn-bird-collection_52683-42321.jpg?w=740&t=st=1677462200~exp=1677462800~hmac=cc48a9a93694934a8fb88d88823eca7fbd6283e0b412646f3cfcc397895d877f' alt="">
+          </div>
+        </div>
+      </div>
+      <div class="column is-half each-service">
+        <div class="columns">
+          <div class="column content">
+            <h1>Training</h1>
+
+            <p>- Your bird now can reflect to trainer signal!</p>
+            <p>- Training service start at 9AM!</p>
+          </div>
+          <div class="column">
+            <img src='https://img.freepik.com/free-vector/hand-drawn-bird-collection_52683-42321.jpg?w=740&t=st=1677462200~exp=1677462800~hmac=cc48a9a93694934a8fb88d88823eca7fbd6283e0b412646f3cfcc397895d877f' alt="">
+          </div>
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
 </template>
 <script>
-import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
-import { defineComponent, ref } from 'vue';
-export default defineComponent({
-    components: {
-        UserOutlined,
-        LaptopOutlined,
-        NotificationOutlined,
-    },
-    setup() {
-        return {
-            selectedKeys1: ref(['2']),
-            selectedKeys2: ref(['1']),
-            openKeys: ref(['sub1']),
-        };
-    },
-});
+export default {
+  props: ['booking']
+}
 </script>
-<style>
-#components-layout-demo-top-side .logo {
-    float: left;
-    width: 120px;
-    height: 31px;
-    margin: 16px 24px 16px 0;
-    background: rgba(255, 255, 255, 0.3);
-}
 
-.ant-row-rtl #components-layout-demo-top-side .logo {
-    float: right;
-    margin: 16px 0 16px 24px;
-}
-
-.site-layout-background {
-    background: #fff;
+<style scoped>
+.each-service{
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px;
 }
 </style>
