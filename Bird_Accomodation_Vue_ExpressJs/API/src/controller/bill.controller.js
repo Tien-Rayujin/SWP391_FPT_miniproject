@@ -3,12 +3,19 @@ const { ErrorHandler } = require('../middlewares/errorHandler.mdw');
 const { dateFormat } = require('../config/config');
 
 module.exports = {
+    createBill: async (req, res, next) => {
+        try{
+            const { booking_id, user_id } = req.body;
+        } catch (error) {
+            next(error);
+        }
+    },
     getBill: async (req, res, next) => {
         try {
             const { booking_id } = req.params;
             const bill = await billModel.getBill(booking_id);
             const billService = await billModel.getBillServiceDetail(booking_id);
-            if (billService.length === 0 && bill.length === 0) {
+            if (billService === null && bill === null || billService.length === 0 && bill.length === 0) {
                 throw new ErrorHandler(404, 'Bill not found');
             } else {
                 const serviceList = billService.map(item => ({

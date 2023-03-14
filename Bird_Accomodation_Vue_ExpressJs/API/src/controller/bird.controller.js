@@ -1,12 +1,11 @@
 const birdModel = require('../models/bird.model');
-const { getUserId } = require('../models/account.model');
 
 module.exports = {
     getAllRegistedBird: async (req, res, next) => {
         try {
             const email = req.payload.email;
             const result = await birdModel.getAllRegistedBird(email);
-            if (result.length === 0) {
+            if (result === null) {
                 res.status(404).send({
                     exitcode: 101,
                     message: "No bird found"
@@ -21,7 +20,7 @@ module.exports = {
                     gender: item.gender,
                     image: item.image,
                     description: item.description,
-                    // boarding: item.boarding
+                    boarding: item.boarding
                 }))
                 res.status(200).send({
                     exitcode: 0,
@@ -45,8 +44,8 @@ module.exports = {
             // console.log(req.file)
             const filename = req.file.filename;
             const birdDetail = {
-                user_id: user_id,
-                type_id: bird_type,
+                user_id: userId,
+                type_id: birdTypeId,
                 bird_name: bird_name,
                 age: age,
                 gender: gender,
@@ -55,9 +54,11 @@ module.exports = {
                 image: filename
             }
             const result = await birdModel.registerNewBird(birdDetail);
-            if (result > 0) {
+            console.log(result);
+            if (result !== null) {
                 res.status(201).send({
                     exitcode: 0,
+                    bird_id: result[0].bird_id,
                     message: "Register new bird successfully"
                 })
             } else {
@@ -104,13 +105,15 @@ module.exports = {
     updateBirdById: async (req, res, next) => {
         try {
             const bird_id = req.params.bird_id;
-            const { bird_name,
+            const {
+                bird_name,
                 bird_type,
                 age,
                 gender,
                 breed,
                 description,
-                image } = req.body;
+                image
+            } = req.body;
             const birdTypeId = await birdModel.getBirdTypeId(bird_type);
             const updateDetail = {
                 bird_id: bird_id,
@@ -123,7 +126,8 @@ module.exports = {
                 image: image
             }
             const result = await birdModel.updateBirdById(updateDetail);
-            if (result === 0) {
+            console.log(result);
+            if (result === null) {
                 res.status(404).send({
                     exitcode: 101,
                     message: "Bird update failed"
@@ -143,7 +147,7 @@ module.exports = {
         try {
             const bird_id = req.params.bird_id;
             const result = await birdModel.deleteBirdById(bird_id);
-            if (result === 0) {
+            if (result === null) {
                 res.status(404).send({
                     exitcode: 101,
                     message: "No bird found"
@@ -162,7 +166,7 @@ module.exports = {
     getAllBirdType: async (req, res, next) => {
         try {
             const result = await birdModel.getAllBirdType();
-            if (result.length === 0) {
+            if (result === null) {
                 res.status(404).send({
                     exitcode: 101,
                     message: "No bird type found"
